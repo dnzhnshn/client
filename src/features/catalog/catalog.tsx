@@ -3,15 +3,21 @@ import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Products } from '../../app/model/products';
 import ProductList from './productList';
-
+import agent from '../../api/agent';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 export default () => {
     const [products, setProduct] = useState<Products[]>([])
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      fetch('http://localhost:4000/api/ProductControler')
-        .then(((response) => { return response.json() }))
-        .then((data) => { setProduct(data);})
+        agent.catalog.list()
+            .then((data) => { setProduct(data); })
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
     }, [])
+    if (loading)
+        return <LoadingComponent></LoadingComponent>
+
     return <>
         <ProductList products={products}></ProductList>
     </>
