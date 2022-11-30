@@ -1,11 +1,11 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './app/layout/App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserHistory } from "history";
 import { BrowserRouter } from 'react-router-dom';
+import { StoreProvider } from './context/StoreContext';
 
-export const history=createBrowserHistory();
+export const history = createBrowserHistory();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,7 +14,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     {/* <React.StrictMode> */}
+    <StoreProvider>
       <App />
+    </StoreProvider>
     {/* </React.StrictMode> */}
   </BrowserRouter>
 );

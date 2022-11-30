@@ -16,7 +16,7 @@ export default () => {
             .finally(() => setLoading(false));
     }, [])
     if (loading)
-        return <LoadingComponent></LoadingComponent>
+        return <LoadingComponent message='loading catalog'></LoadingComponent>
 
     return <>
         <ProductList products={products}></ProductList>

@@ -1,7 +1,7 @@
-import { AlignHorizontalCenter, ShoppingCart } from "@mui/icons-material"
+import { ShoppingCart } from "@mui/icons-material"
 import { AppBar, List, Switch, Toolbar, Typography, ListItem, IconButton, Badge, Box } from "@mui/material"
-import { typography } from "@mui/system"
 import { NavLink } from "react-router-dom"
+import { useStoreContext } from "../../context/StoreContext"
 
 interface props {
     mode: boolean,
@@ -20,6 +20,10 @@ const rightLinks = [
 ]
 
 export default (props: props) => {
+
+    const {basket}=useStoreContext();
+    const currentItemCount=basket?.items.reduce((sum,item)=>sum+item.quantity,0);
+
     const handleChecked = (e: any) => {
         props.setMode(e.target.checked);
     }
@@ -52,8 +56,8 @@ export default (props: props) => {
                 }
             </List>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <IconButton size="large" sx={{ color: 'inherit' }}>
-                    <Badge badgeContent={1} color='secondary'>
+                <IconButton href='/basket' size="large" sx={{ color: 'inherit'}} >
+                    <Badge badgeContent={currentItemCount} color='secondary'>
                         <ShoppingCart></ShoppingCart>
                     </Badge>
                 </IconButton>

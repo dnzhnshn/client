@@ -4,7 +4,6 @@ import Header from "./Header";
 import { useState } from 'react';
 import { Route, Switch } from "react-router-dom";
 import catalog from "../../features/catalog/catalog";
-import productCard from "../../features/catalog/productCard";
 import AboutPage from "../../features/about/AboutPage";
 import ContactPage from "../../features/contact/ContactPage";
 import HomePage from "../../features/home/HomePage";
@@ -13,8 +12,33 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import ServerError from '../../errors/ServerError';
 import NotFound from '../../errors/Notfound';
+import BasketPage from '../../features/basket/BasketPage';
+import { useStoreContext } from "../../context/StoreContext";
+import { useEffect } from 'react';
+import agent from '../../api/agent';
+import { getCookie } from '../../util/util';
+import LoadingComponent from './LoadingComponent';
 
 function App() {
+  const { setBasket } = useStoreContext();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const buyerId = getCookie('buyerId');
+    if (buyerId) {
+      agent.basket.get().then((basket) => {
+        setBasket(basket)
+      }).catch((err) => {
+        console.log(err);
+      }).finally(() => {
+        setLoading(false);
+      })
+    } else {
+      setLoading(false);
+    }
+  }, [setBasket])
+
+
   const [mode, setMode] = useState(false);
   const modeType = mode ? "dark" : "light";
   const theme = createTheme({
@@ -25,6 +49,8 @@ function App() {
       }
     }
   })
+
+  if (loading) return <LoadingComponent message="initilasing app.."></LoadingComponent>
 
   return (
     <ThemeProvider theme={theme} >
@@ -38,6 +64,7 @@ function App() {
           <Route exact path="/productDetail/:id" component={ProductDetail}></Route>
           <Route exact path="/about" component={AboutPage}></Route>
           <Route exact path="/contact" component={ContactPage}></Route>
+          <Route exact path="/basket" component={BasketPage}></Route>
           <Route path="/server-error" component={ServerError}></Route>
           <Route component={NotFound}></Route>
         </Switch>
